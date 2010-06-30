@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "righttp"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{A HTTP library from scratch for ruby1.9}
+    gem.description = %Q{Why? Because it has to be done!}
     gem.email = "contact@smyck.org"
     gem.homepage = "http://github.com/hukl/righttp"
     gem.authors = ["hukl"]
