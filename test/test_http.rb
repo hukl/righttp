@@ -47,4 +47,18 @@ class TestHttp < Test::Unit::TestCase
     assert_equal "/posts", get.path
   end
 
+  test "generate_header_and_body" do
+    get = HTTP.new( {:host => "localhost", :path => "/posts"} )
+    assert_not_nil get.generate_header_and_body
+
+    expected = "GET /posts HTTP/1.1\r\n"      \
+               "Host: localhost\r\n"          \
+               "Origin: localhost\r\n"        \
+               "Content-Length: 0\r\n"        \
+               "Content-Type: text/plain\r\n" \
+               "Connection: close\r\n\r\n"
+
+    assert_equal expected, get.header
+  end
+
 end
