@@ -21,7 +21,11 @@ module Rig
     end
 
     def generate_header_and_body
-      update_body
+      if @method == "GET"
+        update_path_query_params
+      else
+        update_body
+      end
       update_header
     end
 
@@ -38,8 +42,42 @@ module Rig
       )
     end
 
+    def update_path_query_params
+
+    end
+
     def update_body
-      @body
+      if multipart?
+        create_multipart_body
+      else
+        create_simple_body
+      end
+    end
+
+    def new_text_multipart
+
+    end
+
+    def new_file_multipart
+
+    end
+
+    def create_multipart_body
+      @body << "--#{boundary}\r\n"
+
+      @params.each do |key, value|
+        if value.is_a?( File )
+          @body << new_file_multipart( key, value )
+        elsif value.is_a?( String ) || value.responds_to?( :to_s )
+          @body << new_text_multipart( key, value )
+        else
+          raise ArgumentError, "Invalid Parameter Value"
+        end
+      end
+    end
+
+    def create_simple_body
+      @body = @params.map {|key, value| "#{key}=#{value}"}.join("&")
     end
 
     def determine_content_type
@@ -60,12 +98,12 @@ module Rig
   end
 
   class HTTPHeader < Hash
+
     def initialize options
       super.merge! options
     end
 
     def to_s
-
       header_string = map do |field_name, value|
         if field_name == ""
           value
@@ -76,6 +114,7 @@ module Rig
 
       header_string.join(CRLF) + CRLF + CRLF
     end
+
   end
 
 end
