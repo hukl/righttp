@@ -64,6 +64,8 @@ module Rig
 
     def new_text_multipart field_name, text
       part = ""
+      part += "--#{boundary}"
+      part += CRLF
       part += "Content-Disposition: form-data; name=\"#{field_name}\""
       part += CRLF
       part += CRLF
@@ -88,8 +90,6 @@ module Rig
     end
 
     def create_multipart_body
-      @body << "--#{boundary}\r\n"
-
       @params.each do |key, value|
         if value.is_a?( File )
           @body << new_file_multipart( key, value )

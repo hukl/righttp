@@ -61,4 +61,23 @@ class TestHttp < Test::Unit::TestCase
     assert_equal expected, get.header
   end
 
+  test "multipart body gets properly created" do
+    post = HTTP.new(
+      :host   => "localhost",
+      :path   => "/photos",
+      :method => "POST",
+      :params => {
+        "photo[title]"    => "Hello World",
+        "photo[image]"    => File.open("/Users/hukl/Desktop/file1.png"),
+        "photo[picture]"  => File.open("/Users/hukl/Desktop/file2.png")
+      }
+    )
+    post.generate_header_and_body
+
+    post.tcp_socket.write (post.header + post.body)
+    response = post.tcp_socket.recvfrom(2**16)
+    status = response.first.match(/HTTP\/1\.1\s(\d\d\d).+$/)[1]
+
+    assert_equal 302, status.to_i
+  end
 end
