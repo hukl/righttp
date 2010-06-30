@@ -16,7 +16,7 @@ module Rig
       @path           = options[:path]    || "/"
       @header         = HTTPHeader.new( "" => "#{@method} #{@path} HTTP/1.1" )
       @custom_header  = HTTPHeader.new( options[:header]  || {} )
-      @body           = []
+      @body           = HTTPBody.new
       @tcp_socket     = TCPSocket.new( @host, @port )
     end
 
@@ -46,6 +46,14 @@ module Rig
 
     end
 
+    def multipart?
+      if defined? @multipart
+        @multipart
+      else 
+        @multipart = @params.values.map(&:class).include?( File )
+      end
+    end
+
     def update_body
       if multipart?
         create_multipart_body
@@ -54,12 +62,29 @@ module Rig
       end
     end
 
-    def new_text_multipart
-
+    def new_text_multipart field_name, text
+      part = ""
+      part += "Content-Disposition: form-data; name=\"#{field_name}\""
+      part += CRLF
+      part += CRLF
+      part += text
+      part += CRLF
     end
 
-    def new_file_multipart
+    def new_file_multipart field_name, file
+      content_type = %x[file --mime-type -b #{file.path}].chomp
 
+      part = ""
+      part += "--#{boundary}"
+      part += CRLF
+      part += "Content-Disposition: form-data; name=\"#{field_name}\"; "
+      part += "filename=\"#{File.basename( file )}\""
+      part += CRLF
+      part += "Content-Type: #{content_type}"
+      part += CRLF
+      part += CRLF
+      part += file.read
+      part += CRLF
     end
 
     def create_multipart_body
@@ -74,6 +99,8 @@ module Rig
           raise ArgumentError, "Invalid Parameter Value"
         end
       end
+
+      @body << "--#{boundary}--\r\n"
     end
 
     def create_simple_body
@@ -81,7 +108,7 @@ module Rig
     end
 
     def determine_content_type
-      if @params.values.map(&:class).include?( File )
+      if multipart?
         "multipart/form-data; boundary=#{boundary}"
       else
         "text/plain"
@@ -94,6 +121,10 @@ module Rig
 
     def header
       @header.to_s
+    end
+
+    def body
+      @body.to_s
     end
   end
 
@@ -113,6 +144,14 @@ module Rig
       end
 
       header_string.join(CRLF) + CRLF + CRLF
+    end
+
+  end
+
+  class HTTPBody < Array
+
+    def to_s
+      join
     end
 
   end
