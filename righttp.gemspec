@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "lib/http.rb",
+     "righttp.gemspec",
      "test/helper.rb",
      "test/test_http.rb"
   ]
