@@ -23,7 +23,8 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
-     "lib/http.rb",
+     "lib/rig/http.rb",
+     "lib/righttp.rb",
      "righttp.gemspec",
      "test/helper.rb",
      "test/test_http.rb"

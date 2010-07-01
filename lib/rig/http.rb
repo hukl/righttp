@@ -29,6 +29,19 @@ module Rig
       update_header
     end
 
+    def send
+      begin
+        @tcp_socket.write( header + body )
+        response = @tcp_socket.recvfrom(2**16)
+      rescue => exception
+        puts exception.message
+      ensure
+        @tcp_socket.close
+      end
+
+      response || exception.message
+    end
+
     def update_header
       @header.merge!(
         "Host"            => "localhost",
@@ -104,14 +117,18 @@ module Rig
     end
 
     def create_simple_body
-      @body = @params.map {|key, value| "#{key}=#{value}"}.join("&")
+      @body << @params.map {|key, value| "#{key}=#{value}"}.join("&")
     end
 
     def determine_content_type
       if multipart?
         "multipart/form-data; boundary=#{boundary}"
       else
-        "text/plain"
+        if @method == "POST"
+          "application/x-www-form-urlencoded; charset=UTF-8"
+        else
+          "text/plain"
+        end
       end
     end
 

@@ -80,4 +80,17 @@ class TestHttp < Test::Unit::TestCase
 
     assert_equal 302, status.to_i
   end
+
+  test "real get request" do
+    get = HTTP.new(
+      :host => "localhost",
+      :path => "/photos",
+    )
+
+    get.tcp_socket.write (get.header + get.body)
+    response = get.tcp_socket.recvfrom(2**16)
+    status = response.first.match(/HTTP\/1\.1\s(\d\d\d).+$/)[1]
+
+    assert_equal 200, status.to_i
+  end
 end
