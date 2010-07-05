@@ -84,7 +84,7 @@ class TestHttp < Test::Unit::TestCase
   test "real get request" do
     get = HTTP.new(
       :host => "localhost",
-      :path => "/photos",
+      :path => "/photos"
     )
 
     get.tcp_socket.write (get.header + get.body)
