@@ -1,0 +1,56 @@
+h1. righttp
+
+righttp is a lightweigt http client library which is intended to simplify http
+requests.
+
+It is in a very early stage and patches, suggestions and ideas how to improve it
+are highly appreciated.
+
+h2. Usage
+
+Currently there is only one way to perform a request:
+
+h3. Minimal version
+
+bc. request  = Rig::HTTP.new( :host => "ruby-lang.org" )
+response = request.send
+
+h3. More elaborate version
+
+bc. request  = Rig::HTTP.new(
+  :host   => "ruby-lang.org",
+  :path   => "/en/documentation/",
+  :params => {"love" => "true"}
+  :method => "GET",
+  :header => "x-CUSTOM-HEADER" => "Awesome"
+)
+response = request.send
+
+There will be wrapper methods for the different HTTP methods in the future.
+It is also possible to do multipart form POST/PUT requests with multiple
+files attached.
+
+h3. Multipart Post
+
+bc. request = Rig::HTTP.new(
+  :host   => "example.org",
+  :path   => "/posts",
+  :params => { "title" => "Oh Hai", "upload" => File.open("/path/to/file.jpg") }
+)
+response = request.send
+
+The file will be closed once the multipart is created.
+
+h2. Note on Patches/Pull Requests
+ 
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Commit, do not mess with rakefile, version, or history.
+  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+h2. Copyright
+
+Copyright (c) 2010 hukl. See LICENSE for details.

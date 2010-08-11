@@ -13,7 +13,7 @@ module Rig
       @port           = options[:port]    || 80
       @params         = options[:params]  || {}
       @method         = options[:method]  || "GET"
-      @path           = options[:path]    || "/"
+      @path           = (options[:path]    || "/") + update_path_query_params
       @header         = HTTPHeader.new( "" => "#{@method} #{@path} HTTP/1.1" )
       @custom_header  = HTTPHeader.new( options[:header]  || {} )
       @body           = HTTPBody.new
@@ -21,9 +21,7 @@ module Rig
     end
 
     def generate_header_and_body
-      if @method == "GET"
-        update_path_query_params
-      else
+      if @method == "POST" || @method == "PUT"
         update_body
       end
       update_header
@@ -40,7 +38,7 @@ module Rig
         @tcp_socket.close
       end
 
-      response || exception.message
+      HTTPResponse.new( response ) || exception.message
     end
 
     def update_header
@@ -57,13 +55,17 @@ module Rig
     end
 
     def update_path_query_params
-
+      if @params.is_a? Hash
+        return "?" + @params.map {|key, value| "#{key}=#{value}"}.join("&")
+      elsif @params.is_a? String
+        return "?" + @params
+      end
     end
 
     def multipart?
       if defined? @multipart
         @multipart
-      else 
+      else
         @multipart = @params.values.map(&:class).include?( File )
       end
     end
@@ -171,6 +173,20 @@ module Rig
 
     def to_s
       join
+    end
+
+  end
+
+  class HTTPResponse
+
+    attr_reader :header, :body
+
+    def initialize response
+      begin
+        @header, @body = response.split(CRLF + CRLF)
+      rescue
+        nil
+      end
     end
 
   end
