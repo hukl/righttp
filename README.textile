@@ -1,10 +1,8 @@
 h1. righttp
 
-righttp is a lightweigt http client library which is intended to simplify http
-requests.
+righttp is a lightweigt http client library which is intended to simplify http requests.
 
-It is in a very early stage and patches, suggestions and ideas how to improve it
-are highly appreciated.
+It is in a very early stage and patches, suggestions and ideas how to improve it are highly appreciated.
 
 h2. Usage
 
@@ -40,6 +38,10 @@ bc. request = Rig::HTTP.new(
 response = request.send
 
 The file will be closed once the multipart is created.
+
+h3. Responses
+
+When a request is send it returns a Rig::HTTPResponse which has two attributes: header and body
 
 h2. Note on Patches/Pull Requests
  
