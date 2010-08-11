@@ -31,8 +31,9 @@ module Rig
 
     def send
       begin
+        generate_header_and_body
         @tcp_socket.write( header + body )
-        response = @tcp_socket.recvfrom(2**16)
+        response = @tcp_socket.read
       rescue => exception
         puts exception.message
       ensure
@@ -44,7 +45,7 @@ module Rig
 
     def update_header
       @header.merge!(
-        "Host"            => "localhost",
+        "Host"            => @host,
         "Origin"          => "localhost",
         "Content-Length"  => @body.join.bytes.to_a.length,
         "Content-Type"    => determine_content_type
@@ -99,6 +100,7 @@ module Rig
       part += CRLF
       part += CRLF
       part += file.read
+      file.close
       part += CRLF
     end
 
