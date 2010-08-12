@@ -54,11 +54,16 @@ module Rig
       )
     end
 
+    # TODO Refactor this mess!
     def update_path_query_params
-      if @params.is_a?( Hash ) && !@params.empty?
-        return "?" + @params.map {|key, value| "#{key}=#{value}"}.join("&")
-      elsif @params.is_a?( String ) && !@params.empty?
-        return "?" + @params
+      if @method == "GET"
+        if @params.is_a?( Hash ) && !@params.empty?
+          return "?" + @params.map {|key, value| "#{key}=#{value}"}.join("&")
+        elsif @params.is_a?( String ) && !@params.empty?
+          return "?" + @params
+        else
+          return ""
+        end
       else
         return ""
       end
@@ -149,6 +154,7 @@ module Rig
     def body
       @body.to_s
     end
+
   end
 
   class HTTPHeader < Hash
