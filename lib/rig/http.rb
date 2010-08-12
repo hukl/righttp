@@ -195,6 +195,30 @@ module Rig
       rescue
         nil
       end
+
+      if @header =~ /Transfer-Encoding: chunked/
+        parsed_body = ""
+        @body = StringIO.new( @body )
+        read_chunked( parsed_body )
+
+        @body = parsed_body
+      end
+    end
+
+    def read_chunked(dest)
+      len = nil
+      total = 0
+      while true
+        line = @body.readline
+        hexlen = line.slice(/[0-9a-fA-F]+/) or
+          raise HTTPBadResponse, "wrong chunk size line: #{line}"
+        len = hexlen.hex
+        puts len
+        puts "===="
+        break if len == 0
+        @body.read len, dest; total += len
+        @body.read 2   # \r\n
+      end
     end
 
   end
