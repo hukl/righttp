@@ -213,8 +213,6 @@ module Rig
         hexlen = line.slice(/[0-9a-fA-F]+/) or
           raise HTTPBadResponse, "wrong chunk size line: #{line}"
         len = hexlen.hex
-        puts len
-        puts "===="
         break if len == 0
         @body.read len, dest; total += len
         @body.read 2   # \r\n
