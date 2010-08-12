@@ -55,10 +55,12 @@ module Rig
     end
 
     def update_path_query_params
-      if @params.is_a? Hash
+      if @params.is_a?( Hash ) && !@params.empty?
         return "?" + @params.map {|key, value| "#{key}=#{value}"}.join("&")
-      elsif @params.is_a? String
+      elsif @params.is_a?( String ) && !@params.empty?
         return "?" + @params
+      else
+        return ""
       end
     end
 
