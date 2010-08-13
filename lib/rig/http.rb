@@ -73,7 +73,8 @@ module Rig
       if defined? @multipart
         @multipart
       else
-        @multipart = @params.values.map(&:class).include?( File )
+        multipart_params = @params.values.select {|p| p.respond_to?( :read ) }
+        @multipart = !multipart_params.empty?
       end
     end
 
@@ -115,9 +116,9 @@ module Rig
 
     def create_multipart_body
       @params.each do |key, value|
-        if value.is_a?( File )
+        if value.respond_to?( :read )
           @body << new_file_multipart( key, value )
-        elsif value.is_a?( String ) || value.responds_to?( :to_s )
+        elsif value.is_a?( String ) || value.respond_to?( :to_s )
           @body << new_text_multipart( key, value )
         else
           raise ArgumentError, "Invalid Parameter Value"
