@@ -190,18 +190,26 @@ module Rig
     attr_reader :header, :body
 
     def initialize response
-      begin
-        @header, @body = response.split(CRLF + CRLF)
-      rescue
-        nil
-      end
+      @header, @body = response.split(CRLF + CRLF)
 
-      if @header =~ /Transfer-Encoding: chunked/
+      parse_header
+
+      if @header["Transfer-Encoding"] == "chunked"
         parsed_body = ""
         @body = StringIO.new( @body )
         read_chunked( parsed_body )
 
         @body = parsed_body
+      end
+    end
+
+    def parse_header
+      @header = @header.gsub(/^HTTP\/\d\.\d\s\d\d\d.+\r\n/, "")
+      @header = @header.split(CRLF)
+      @header = @header.map { |element| element.split(": ") }
+      @header = @header.inject({}) do |result, element|
+        result[element.first] = element.last
+        result
       end
     end
 
