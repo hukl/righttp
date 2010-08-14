@@ -38,10 +38,12 @@ module Rig
     def multipart?
       if defined? @multipart
         @multipart
-      else
+      elsif @options[:body]
         @multipart = @options[:body].values.any? do |element|
           element.respond_to?( :read )
         end
+      else
+        @multipart = false
       end
     end
 

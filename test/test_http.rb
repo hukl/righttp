@@ -145,11 +145,11 @@ class TestHttp < Test::Unit::TestCase
     assert !request.multipart?, "Should not be multipart"
   end
 
-  #test "http object has accessible params" do
-  #  get = HTTP.new( {:host => "localhost", :params => {"foo" => "bar"}} )
-  #  assert_not_nil get.params
-  #  assert_equal ({"foo" => "bar"}), get.params
-  #end
+  test "http object has accessible options" do
+    get = HTTP.new( {:host => "localhost", :query => {"foo" => "bar"}} )
+    assert_not_nil get.options
+    assert_equal ({"foo" => "bar"}), get.options[:query]
+  end
 
   #test "http object without params specified returns empty params" do
   #  get = HTTP.new( {:host => "localhost"} )
