@@ -20,10 +20,20 @@ module Rig
       case HTTP.options_mode( options )
       when :simple
         uri = URI.parse( options.first )
-        return {:host => uri.host, :port => uri.port, :path => uri.path}
+        return {
+          :host   => uri.host,
+          :port   => uri.port,
+          :path   => uri.path,
+          :query  => uri.query
+        }
       when :mixed
         uri = URI.parse( options.first )
-        uri_options = {:host => uri.host, :port => uri.port, :path => uri.path}
+        uri_options = {
+          :host   => uri.host,
+          :port   => uri.port,
+          :path   => uri.path,
+          :query  => uri.query
+        }
         return uri_options.merge( options.last )
       when :advanced
         puts "avanced"
