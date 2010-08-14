@@ -16,23 +16,33 @@ class TestHttp < Test::Unit::TestCase
 
   test "method get" do
     assert_not_nil request = HTTP.get( "http://foobar.com" )
+    expected = {:host=>"foobar.com", :port=>80, :path=>"", :method=>"GET"}
+    assert_equal expected, request.options
   end
 
   test "method post" do
     assert_not_nil request = HTTP.post( "http://foobar.com" )
+    expected = {:host=>"foobar.com", :port=>80, :path=>"", :method=>"POST"}
+    assert_equal expected, request.options
   end
 
   test "method put" do
     assert_not_nil request = HTTP.put( "http://foobar.com" )
+    expected = {:host=>"foobar.com", :port=>80, :path=>"", :method=>"PUT"}
+    assert_equal expected, request.options
   end
 
   test "method delete" do
     assert_not_nil request = HTTP.delete( "http://foobar.com" )
+    expected = {:host=>"foobar.com", :port=>80, :path=>"", :method=>"DELETE"}
+    assert_equal expected, request.options
   end
 
   test "other missing methods are delegated to super" do
     assert_raise( ArgumentError ) { HTTP.foobar( "http://foobar.com" ) }
   end
+
+  
 
   #test "create the simplest http get object" do
   #  assert_not_nil get = HTTP.new( {:host => "localhost"} )
