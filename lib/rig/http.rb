@@ -10,17 +10,16 @@ module Rig
     attr_reader :options
 
     def initialize *options
-
       @options = normalize_options( options )
     end
 
     def normalize_options options
       options.flatten!
 
-      case HTTP.options_mode( options )
+      options = case HTTP.options_mode( options )
       when :simple
         uri = URI.parse( options.first )
-        return {
+        {
           :host   => uri.host,
           :port   => uri.port,
           :path   => uri.path,
@@ -34,14 +33,19 @@ module Rig
           :path   => uri.path,
           :query  => uri.query
         }
-        return uri_options.merge( options.last )
+        uri_options.merge( options.last )
       when :advanced
         puts "avanced"
-        return options
+        options
       else
         raise ArgumentError
       end
 
+      if options[:path].empty?
+        options[:path] = "/"
+      end
+
+      options
     end
 
     def generate_uri options

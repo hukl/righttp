@@ -19,7 +19,7 @@ class TestHttp < Test::Unit::TestCase
     expected = {
       :host=>"foobar.com",
       :port=>80,
-      :path=>"",
+      :path=>"/",
       :method=>"GET",
       :query => nil
     }
@@ -31,7 +31,7 @@ class TestHttp < Test::Unit::TestCase
     expected = {
       :host=>"foobar.com",
       :port=>80,
-      :path=>"",
+      :path=>"/",
       :method=>"POST",
       :query => nil
     }
@@ -43,7 +43,7 @@ class TestHttp < Test::Unit::TestCase
     expected = {
       :host=>"foobar.com",
       :port=>80,
-      :path=>"",
+      :path=>"/",
       :method=>"PUT",
       :query => nil
     }
@@ -55,7 +55,7 @@ class TestHttp < Test::Unit::TestCase
     expected = {
       :host=>"foobar.com",
       :port=>80,
-      :path=>"",
+      :path=>"/",
       :method=>"DELETE",
       :query => nil
     }
@@ -71,7 +71,7 @@ class TestHttp < Test::Unit::TestCase
     expected = {
       :host=>"foobar.com",
       :port=>3000,
-      :path=>"",
+      :path=>"/",
       :method=>"GET",
       :query => nil
     }
@@ -83,7 +83,7 @@ class TestHttp < Test::Unit::TestCase
     expected = {
       :host=>"foobar.com",
       :port=>3000,
-      :path=>"",
+      :path=>"/",
       :method=>"GET",
       :query => "foo=bar"
     }
@@ -95,7 +95,7 @@ class TestHttp < Test::Unit::TestCase
     expected = {
       :host=>"foobar.com",
       :port=>3000,
-      :path=>"",
+      :path=>"/",
       :method=>"GET",
       :query => "foo=bar"
     }
@@ -107,7 +107,7 @@ class TestHttp < Test::Unit::TestCase
     expected = {
       :host=>"foobar.com",
       :port=>3000,
-      :path=>"",
+      :path=>"/",
       :method=>"GET",
       :query => "foo=bar"
     }
