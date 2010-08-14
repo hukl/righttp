@@ -151,45 +151,38 @@ class TestHttp < Test::Unit::TestCase
     assert_equal ({"foo" => "bar"}), get.options[:query]
   end
 
-  #test "http object without params specified returns empty params" do
-  #  get = HTTP.new( {:host => "localhost"} )
-  #  assert_not_nil get.params
-  #  assert_equal ({}), get.params
-  #end
-
   test "simple http object defaults to method GET" do
     get = HTTP.new( {:host => "localhost"} )
     assert_equal "GET", get.http_method
   end
 
-  #test "method of http object can be overridden" do
-  #  post = HTTP.new( {:host => "localhost", :http_method => "POST"} )
-  #  assert_equal "POST", post.method
-  #end
+  test "method of http object can be overridden" do
+    post = HTTP.new( {:host => "localhost", :http_method => "POST"} )
+    assert_equal "POST", post.http_method
+  end
 
-  #test "path of a http object defaults to index" do
-  #  get = HTTP.new( {:host => "localhost"} )
-  #  assert_equal "/", get.path
-  #end
+  test "path of a http object defaults to index" do
+    get = HTTP.new( {:host => "localhost"} )
+    assert_equal "/", get.options[:path]
+  end
 
-  #test "path of http object can be set" do
-  #  get = HTTP.new( {:host => "localhost", :path => "/posts"} )
-  #  assert_equal "/posts", get.path
-  #end
+  test "path of http object can be set" do
+    get = HTTP.new( {:host => "localhost", :path => "/posts"} )
+    assert_equal "/posts", get.options[:path]
+  end
 
-  #test "generate_header_and_body" do
-  #  get = HTTP.new( {:host => "localhost", :path => "/posts"} )
-  #  assert_not_nil get.generate_header_and_body
+  test "generate_header_and_body" do
+    get = HTTP.new( {:host => "localhost", :path => "/posts"} )
 
-  #  expected = "GET /posts HTTP/1.1\r\n"      \
-  #             "Host: localhost\r\n"          \
-  #             "Origin: localhost\r\n"        \
-  #             "Content-Length: 0\r\n"        \
-  #             "Content-Type: text/plain\r\n" \
-  #             "Connection: close\r\n\r\n"
+    expected = "GET /posts HTTP/1.1\r\n"      \
+               "Host: localhost\r\n"          \
+               "Origin: localhost\r\n"        \
+               "Content-Length: 0\r\n"        \
+               "Content-Type: text/plain\r\n" \
+               "Connection: close\r\n\r\n"
 
-  #  assert_equal expected, get.header
-  #end
+    assert_equal expected, get.header.to_s
+  end
 
   #test "multipart body gets properly created" do
   #  post = HTTP.new(

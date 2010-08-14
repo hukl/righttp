@@ -11,8 +11,8 @@ module Rig
 
     def initialize *options
       @options      = normalize_options( options )
-      @body         = prepare_body
-      @header       = prepare_header
+      @body         = HTTPBody.new( prepare_body )
+      @header       = HTTPHeader.new( prepare_header )
     end
 
     def http_method
@@ -106,7 +106,7 @@ module Rig
       }.merge(
         (@options[:custom_header] || {})
       ).merge(
-        "Connection"      => "Close"
+        "Connection"      => "close"
       )
     end
 
@@ -216,6 +216,35 @@ module Rig
     end
   end
 
+  class HTTPHeader < Hash
+
+    def initialize options
+      super.merge! options
+    end
+
+    def to_s
+      header_string = map do |field_name, value|
+        if field_name == ""
+          value
+        else
+          "#{field_name}: #{value}"
+        end
+      end
+
+      header_string.join(CRLF) + CRLF + CRLF
+    end
+
+  end
+
+  class HTTPBody < Array
+
+    def to_s
+      join
+    end
+
+  end
+
 end
+
 
 class NoHostProvided < ArgumentError; end;
