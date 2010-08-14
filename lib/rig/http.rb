@@ -176,7 +176,7 @@ module Rig
     end
 
     def self.options_mode options
-      if options.length == 1 && options.first.is_a?( String )
+      if    options.length == 1 && options.first.is_a?( String )
         :simple
       elsif options.length == 2 && options.map(&:class) == [String, Hash]
         :mixed
