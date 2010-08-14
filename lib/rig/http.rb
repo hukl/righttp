@@ -7,10 +7,109 @@ module Rig
   HTTPMethods = %w(GET POST PUT DELETE)
 
   class HTTP
-    attr_reader :options
+    attr_reader :options, :header, :body
 
     def initialize *options
-      @options = normalize_options( options )
+      @options      = normalize_options( options )
+      @body         = prepare_body
+      @header       = prepare_header
+    end
+
+    def http_method
+      @options[:http_method] || "GET"
+    end
+
+    def boundary
+      @boundary ||= "----rigHTTPmultipart#{rand(2**32)}XZWCFOOBAR"
+    end
+
+    def prepare_body
+      if %w(POST PUT).include?( http_method ) && @options[:body]
+        if multipart?
+          return create_multipart_body
+        else
+          return create_simple_body
+        end
+      else
+        []
+      end
+    end
+
+    def multipart?
+      if defined? @multipart
+        @multipart
+      else
+        @multipart = @options[:body].values.any? do |element|
+          element.respond_to?( :read )
+        end
+      end
+    end
+
+    def create_simple_body
+      [@options[:body].map {|key, value| "#{key}=#{value}"}.join("&")]
+    end
+
+    def create_multipart_body
+      body = []
+
+      @options[:body].each do |key, value|
+        if value.respond_to?( :read )
+          body << new_file_multipart( key, value )
+        elsif value.is_a?( String ) || value.respond_to?( :to_s )
+          body << new_text_multipart( key, value )
+        else
+          raise ArgumentError, "Invalid Parameter Value"
+        end
+      end
+
+      body << "--#{boundary}--\r\n"
+    end
+
+    def new_text_multipart field_name, text
+      part = ""
+      part += "--#{boundary}"
+      part += CRLF
+      part += "Content-Disposition: form-data; name=\"#{field_name}\""
+      part += CRLF
+      part += CRLF
+      part += text
+      part += CRLF
+    end
+
+    def new_file_multipart field_name, file
+      content_type = %x[file --mime-type -b #{file.path}].chomp
+
+      part = ""
+      part += "--#{boundary}"
+      part += CRLF
+      part += "Content-Disposition: form-data; name=\"#{field_name}\"; "
+      part += "filename=\"#{File.basename( file )}\""
+      part += CRLF
+      part += "Content-Type: #{content_type}"
+      part += CRLF
+      part += CRLF
+      part += file.read
+      file.close
+      part += CRLF
+    end
+
+    def prepare_header
+
+      header = {
+        ""                => "#{@options[:http_method]} #{path} HTTP/1.1",
+        "Host"            => @options[:host],
+        "Origin"          => "localhost",
+        "Content-Length"  => @body.join.bytes.to_a.length,
+        "Content-Type"    => determine_content_type
+      }.merge(
+        (@options[:custom_header] || {})
+      ).merge(
+        "Connection"      => "Close"
+      )
+    end
+
+    def determine_content_type
+      "text/plain"
     end
 
     def normalize_options options
