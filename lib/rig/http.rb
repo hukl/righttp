@@ -1,5 +1,9 @@
 require 'socket'
 require 'uri'
+require 'rig/http_response'
+require 'rig/http_header'
+require 'rig/http_body'
+require 'rig/http_exceptions'
 
 module Rig
 
@@ -216,35 +220,4 @@ module Rig
     end
   end
 
-  class HTTPHeader < Hash
-
-    def initialize options
-      super.merge! options
-    end
-
-    def to_s
-      header_string = map do |field_name, value|
-        if field_name == ""
-          value
-        else
-          "#{field_name}: #{value}"
-        end
-      end
-
-      header_string.join(CRLF) + CRLF + CRLF
-    end
-
-  end
-
-  class HTTPBody < Array
-
-    def to_s
-      join
-    end
-
-  end
-
 end
-
-
-class NoHostProvided < ArgumentError; end;

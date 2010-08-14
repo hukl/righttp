@@ -1,0 +1,1 @@
+class NoHostProvided < ArgumentError; end;
