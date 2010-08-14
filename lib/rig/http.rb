@@ -109,7 +109,15 @@ module Rig
     end
 
     def determine_content_type
-      "text/plain"
+      if multipart?
+        "multipart/form-data; boundary=#{boundary}"
+      else
+        if %w(POST PUT).include?( http_method )
+          "application/x-www-form-urlencoded; charset=UTF-8"
+        else
+          "text/plain"
+        end
+      end
     end
 
     def normalize_options options
