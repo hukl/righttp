@@ -20,7 +20,7 @@ class TestHttp < Test::Unit::TestCase
       :host=>"foobar.com",
       :port=>80,
       :path=>"/",
-      :method=>"GET",
+      :http_method=>"GET",
       :query => nil
     }
     assert_equal expected, request.options
@@ -32,7 +32,7 @@ class TestHttp < Test::Unit::TestCase
       :host=>"foobar.com",
       :port=>80,
       :path=>"/",
-      :method=>"POST",
+      :http_method=>"POST",
       :query => nil
     }
     assert_equal expected, request.options
@@ -44,7 +44,7 @@ class TestHttp < Test::Unit::TestCase
       :host=>"foobar.com",
       :port=>80,
       :path=>"/",
-      :method=>"PUT",
+      :http_method=>"PUT",
       :query => nil
     }
     assert_equal expected, request.options
@@ -56,9 +56,22 @@ class TestHttp < Test::Unit::TestCase
       :host=>"foobar.com",
       :port=>80,
       :path=>"/",
-      :method=>"DELETE",
+      :http_method=>"DELETE",
       :query => nil
     }
+    assert_equal expected, request.options
+  end
+
+  test "get request with advanced mode" do
+    assert_not_nil request = HTTP.new(:host => "foobar.com")
+    expected = {
+      :host=>"foobar.com",
+      :port=>80,
+      :path=>"/",
+      :http_method=>"GET",
+      :query => nil
+    }
+
     assert_equal expected, request.options
   end
 
@@ -72,7 +85,7 @@ class TestHttp < Test::Unit::TestCase
       :host=>"foobar.com",
       :port=>3000,
       :path=>"/",
-      :method=>"GET",
+      :http_method=>"GET",
       :query => nil
     }
     assert_equal expected, request.options
@@ -84,7 +97,7 @@ class TestHttp < Test::Unit::TestCase
       :host=>"foobar.com",
       :port=>3000,
       :path=>"/",
-      :method=>"GET",
+      :http_method=>"GET",
       :query => "foo=bar"
     }
     assert_equal expected, request.options
@@ -96,7 +109,7 @@ class TestHttp < Test::Unit::TestCase
       :host=>"foobar.com",
       :port=>3000,
       :path=>"/",
-      :method=>"GET",
+      :http_method=>"GET",
       :query => "foo=bar"
     }
     assert_equal expected, request.options
@@ -108,24 +121,29 @@ class TestHttp < Test::Unit::TestCase
       :host=>"foobar.com",
       :port=>3000,
       :path=>"/",
-      :method=>"GET",
+      :http_method=>"GET",
       :query => "foo=bar"
     }
     assert_equal expected, request.options
   end 
 
-  #test "create the simplest http get object" do
-  #  assert_not_nil get = HTTP.new( {:host => "localhost"} )
-  #end
+  test "if multipart" do
+    File.open(File.join(File.dirname(__FILE__), "fixtures", "yay.gif")) do |f|
+      request = HTTP.post(
+        "http://foo.com",
+        :body => {:upload => f}
+      )
+      assert request.multipart?, "Should be multipart"
+    end
+  end
 
-  #test "to create a http object at least the host must be specified" do
-  #  assert_raise(ArgumentError) { get = HTTP.new( {} ) }
-  #end
-
-  #test "http objects have accessible socket object" do
-  #  get = HTTP.new( {:host => "localhost"} )
-  #  assert_not_nil get.tcp_socket
-  #end
+  test "if not multipart" do
+    request = HTTP.post(
+      "http://foo.com",
+      :body => {:abstract => "bla", :title => "foo"}
+    )
+    assert !request.multipart?, "Should not be multipart"
+  end
 
   #test "http object has accessible params" do
   #  get = HTTP.new( {:host => "localhost", :params => {"foo" => "bar"}} )
@@ -139,13 +157,13 @@ class TestHttp < Test::Unit::TestCase
   #  assert_equal ({}), get.params
   #end
 
-  #test "simple http object defaults to method GET" do
-  #  get = HTTP.new( {:host => "localhost"} )
-  #  assert_equal "GET", get.method
-  #end
+  test "simple http object defaults to method GET" do
+    get = HTTP.new( {:host => "localhost"} )
+    assert_equal "GET", get.http_method
+  end
 
   #test "method of http object can be overridden" do
-  #  post = HTTP.new( {:host => "localhost", :method => "POST"} )
+  #  post = HTTP.new( {:host => "localhost", :http_method => "POST"} )
   #  assert_equal "POST", post.method
   #end
 
@@ -177,7 +195,7 @@ class TestHttp < Test::Unit::TestCase
   #  post = HTTP.new(
   #    :host   => "localhost",
   #    :path   => "/photos",
-  #    :method => "POST",
+  #    :http_method => "POST",
   #    :params => {
   #      "photo[title]"    => "Hello World",
   #      "photo[image]"    => File.open("/Users/hukl/Desktop/file1.png"),
