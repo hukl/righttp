@@ -35,13 +35,18 @@ module Rig
         }
         uri_options.merge( options.last )
       when :advanced
-        puts "avanced"
-        options
+        {
+          :http_method  => options.first[:http_method]  || "GET",
+          :host         => options.first[:host],
+          :port         => options.first[:port]         || 80,
+          :path         => options.first[:path]         || "/",
+          :query        => options.first[:query]
+        }
       else
         raise ArgumentError
       end
 
-      if options[:path].empty?
+      if options[:path].nil? || options[:path].empty?
         options[:path] = "/"
       end
 
@@ -63,6 +68,14 @@ module Rig
       end
     end
 
+    def method_missing name, *args, &block
+      if options[name]
+        return options[name]
+      else
+        super
+      end
+    end
+
     def self.options_mode options
       if options.length == 1 && options.first.is_a?( String )
         :simple
@@ -81,12 +94,12 @@ module Rig
       if HTTPMethods.include?( name )
         case options_mode( args )
         when :simple
-          self.new( args.push( :method => name ) )
+          self.new( args.push( :http_method => name ) )
         when :mixed
-          args.last.merge!( :method => name )
+          args.last.merge!( :http_method => name )
           self.new( args )
         when :advanced
-          self.new( args.first.merge( :method => name ) )
+          self.new( args.first.merge( :http_method => name ) )
         end
       else
         super
@@ -95,6 +108,5 @@ module Rig
   end
 
 end
-
 
 class NoHostProvided < ArgumentError; end;
