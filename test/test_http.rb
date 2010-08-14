@@ -16,25 +16,49 @@ class TestHttp < Test::Unit::TestCase
 
   test "method get" do
     assert_not_nil request = HTTP.get( "http://foobar.com" )
-    expected = {:host=>"foobar.com", :port=>80, :path=>"", :method=>"GET"}
+    expected = {
+      :host=>"foobar.com",
+      :port=>80,
+      :path=>"",
+      :method=>"GET",
+      :query => nil
+    }
     assert_equal expected, request.options
   end
 
   test "method post" do
     assert_not_nil request = HTTP.post( "http://foobar.com" )
-    expected = {:host=>"foobar.com", :port=>80, :path=>"", :method=>"POST"}
+    expected = {
+      :host=>"foobar.com",
+      :port=>80,
+      :path=>"",
+      :method=>"POST",
+      :query => nil
+    }
     assert_equal expected, request.options
   end
 
   test "method put" do
     assert_not_nil request = HTTP.put( "http://foobar.com" )
-    expected = {:host=>"foobar.com", :port=>80, :path=>"", :method=>"PUT"}
+    expected = {
+      :host=>"foobar.com",
+      :port=>80,
+      :path=>"",
+      :method=>"PUT",
+      :query => nil
+    }
     assert_equal expected, request.options
   end
 
   test "method delete" do
     assert_not_nil request = HTTP.delete( "http://foobar.com" )
-    expected = {:host=>"foobar.com", :port=>80, :path=>"", :method=>"DELETE"}
+    expected = {
+      :host=>"foobar.com",
+      :port=>80,
+      :path=>"",
+      :method=>"DELETE",
+      :query => nil
+    }
     assert_equal expected, request.options
   end
 
@@ -42,7 +66,53 @@ class TestHttp < Test::Unit::TestCase
     assert_raise( ArgumentError ) { HTTP.foobar( "http://foobar.com" ) }
   end
 
-  
+  test "mixed mode get" do
+    request = HTTP.get("http://foobar.com", :port => 3000)
+    expected = {
+      :host=>"foobar.com",
+      :port=>3000,
+      :path=>"",
+      :method=>"GET",
+      :query => nil
+    }
+    assert_equal expected, request.options
+  end
+
+  test "mixed mode get with query params" do
+    request = HTTP.get("http://foobar.com?foo=bar", :port => 3000)
+    expected = {
+      :host=>"foobar.com",
+      :port=>3000,
+      :path=>"",
+      :method=>"GET",
+      :query => "foo=bar"
+    }
+    assert_equal expected, request.options
+  end
+
+  test "mixed mode get with query paramsi and inline port" do
+    request = HTTP.get("http://foobar.com:3000?foo=bar")
+    expected = {
+      :host=>"foobar.com",
+      :port=>3000,
+      :path=>"",
+      :method=>"GET",
+      :query => "foo=bar"
+    }
+    assert_equal expected, request.options
+  end
+
+  test "mixed mode get with query params and overriding port" do
+    request = HTTP.get("http://foobar.com:2323?foo=bar", :port => 3000)
+    expected = {
+      :host=>"foobar.com",
+      :port=>3000,
+      :path=>"",
+      :method=>"GET",
+      :query => "foo=bar"
+    }
+    assert_equal expected, request.options
+  end 
 
   #test "create the simplest http get object" do
   #  assert_not_nil get = HTTP.new( {:host => "localhost"} )
