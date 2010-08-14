@@ -13,7 +13,7 @@ module Rig
       @port           = options[:port]    || 80
       @params         = options[:params]  || {}
       @method         = options[:method]  || "GET"
-      @path           = (options[:path]    || "/") + update_path_query_params
+      @path           = (options[:path]   || "/") + update_path_query_params
       @header         = HTTPHeader.new( "" => "#{@method} #{@path} HTTP/1.1" )
       @custom_header  = HTTPHeader.new( options[:header]  || {} )
       @body           = HTTPBody.new
