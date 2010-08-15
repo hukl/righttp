@@ -77,7 +77,6 @@ class TestHttp < Test::Unit::TestCase
       :port=>80,
       :path=>"/",
       :http_method=>"GET",
-      :query => nil,
       :content_type=>"text/plain",
       :content_length=>0
     }
@@ -206,6 +205,22 @@ class TestHttp < Test::Unit::TestCase
     request = HTTP.get( "http://www.spiegel.de" )
     response = request.send
     assert_equal 200, response.status
+  end
+
+  test "more advanced post request" do
+    request = Rig::HTTP.new(
+      :host         => "beta.hoccer.com",
+      :path         => "/events",
+      :http_method  => "POST",
+      :body         => {
+        "event[type]"               => "Drop",
+        "event[latitude]"           => "latitude",
+        "event[longitude]"          => "longitude",
+        "event[location_accuracy]"  => 100,
+        "event[lifetime]"           => 600
+      }
+    )
+    assert_equal false, request.body.multipart?
   end
 
   #test "multipart body gets properly created" do

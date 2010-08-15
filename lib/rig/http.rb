@@ -28,7 +28,7 @@ module Rig
     def send
       begin
         tcp_socket = TCPSocket.new( @options[:host], @options[:port] )
-        tcp_socket.write( @header.to_s)# + @body.to_s )
+        tcp_socket.write( @header.to_s + @body.to_s )
         response = tcp_socket.read
       rescue => exception
         puts exception.message
@@ -69,13 +69,12 @@ module Rig
         }
         uri_options.merge( options.last )
       when :advanced
-        {
-          :http_method  => options.first[:http_method]  || "GET",
-          :host         => options.first[:host],
-          :port         => options.first[:port]         || 80,
-          :path         => options.first[:path]         || "/",
-          :query        => options.first[:query]
-        }
+        options.first[:http_method]  ||= "GET"
+        options.first[:host]
+        options.first[:port]         ||= 80
+        options.first[:path]         ||= "/"
+        options.first[:query]
+        options.first
       else
         raise ArgumentError
       end
