@@ -44,7 +44,7 @@ module Rig
 
     def determine_content_type
       if @body.multipart?
-        "multipart/form-data; boundary=#{boundary}"
+        "multipart/form-data; boundary=#{@body.boundary}"
       else
         if %w(POST PUT).include?( http_method )
           "application/x-www-form-urlencoded; charset=UTF-8"
