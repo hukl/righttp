@@ -2,12 +2,29 @@ module Rig
   class HTTPBody < Array
 
     def initialize options
-      @options = options[:body] || {}
+      @options      = options[:body] || {}
+      @http_method  = options[:http_method]
 
       if multipart?
         create_multipart_body
       else
         create_simple_body
+      end
+    end
+
+    def content_length
+      join.bytes.to_a.length
+    end
+
+    def content_type
+      if multipart?
+        "multipart/form-data; boundary=#{boundary}"
+      else
+        if %w(POST PUT).include?( @http_method )
+          "application/x-www-form-urlencoded; charset=UTF-8"
+        else
+          "text/plain"
+        end
       end
     end
 

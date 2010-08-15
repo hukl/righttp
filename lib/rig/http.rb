@@ -16,7 +16,7 @@ module Rig
     def initialize *options
       @options      = normalize_options( options )
       @body         = HTTPBody.new( @options )
-      @header       = HTTPHeader.new( prepare_header )
+      @header       = HTTPHeader.new( @options, @body )
     end
 
     def with_body?
@@ -25,33 +25,6 @@ module Rig
 
     def http_method
       @options[:http_method] || "GET"
-    end
-
-    def prepare_header
-
-      header = {
-        ""                => "#{@options[:http_method]} #{path} HTTP/1.1",
-        "Host"            => @options[:host],
-        "Origin"          => "localhost",
-        "Content-Length"  => @body.join.bytes.to_a.length,
-        "Content-Type"    => determine_content_type
-      }.merge(
-        (@options[:custom_header] || {})
-      ).merge(
-        "Connection"      => "close"
-      )
-    end
-
-    def determine_content_type
-      if @body.multipart?
-        "multipart/form-data; boundary=#{@body.boundary}"
-      else
-        if %w(POST PUT).include?( http_method )
-          "application/x-www-form-urlencoded; charset=UTF-8"
-        else
-          "text/plain"
-        end
-      end
     end
 
     def normalize_options options
@@ -92,21 +65,6 @@ module Rig
       end
 
       options
-    end
-
-    def generate_uri options
-      if options.first.is_a?( String )
-        URI.parse( options.first )
-      elsif options.first.is_a?( Hash )
-        host = options[:host]
-
-        raise NoHostProvided unless host
-
-        port = (options[:port] || 80)
-        path = (options[:path] || "").gsub(/^\//, "")
-
-        URI.parse( "#{host}:#{port}/#{path}" )
-      end
     end
 
     def method_missing name, *args, &block
