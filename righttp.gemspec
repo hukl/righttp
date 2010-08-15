@@ -5,27 +5,33 @@
 
 Gem::Specification.new do |s|
   s.name = %q{righttp}
-  s.version = "0.0.2"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["hukl"]
-  s.date = %q{2010-08-11}
+  s.date = %q{2010-08-15}
   s.description = %q{Why? Because it has to be done!}
   s.email = %q{contact@smyck.org}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.textile"
   ]
   s.files = [
     ".document",
      ".gitignore",
      "LICENSE",
-     "README.rdoc",
+     "README.textile",
      "Rakefile",
      "VERSION",
+     "doc/mission.textile",
      "lib/rig/http.rb",
+     "lib/rig/http_body.rb",
+     "lib/rig/http_exceptions.rb",
+     "lib/rig/http_header.rb",
+     "lib/rig/http_response.rb",
      "lib/righttp.rb",
      "righttp.gemspec",
+     "test/fixtures/yay.gif",
      "test/helper.rb",
      "test/test_http.rb"
   ]
