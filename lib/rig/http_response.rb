@@ -26,9 +26,8 @@ module Rig
     end
 
     def parse_header
-      status_line_regexp  = /HTTP\/\d\.\d\s\d\d\d.+\r\n/
-      status_line         = @header[status_line_regexp]
-      @header = @header.gsub(status_line_regexp, "Status: #{@status}")
+      status_line = @header[/HTTP\/\d\.\d\s\d\d\d.+\r\n/]
+      @header = @header.gsub(status_line, "Status: #{status_line}")
       @header = @header.split(CRLF)
       @header = @header.map { |element| element.split(": ") }
       @header = @header.inject({}) do |result, element|
