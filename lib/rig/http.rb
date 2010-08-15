@@ -16,7 +16,27 @@ module Rig
     def initialize *options
       @options      = normalize_options( options )
       @body         = HTTPBody.new( @options )
-      @header       = HTTPHeader.new( @options, @body )
+
+      @options.merge!(
+        :content_type   => @body.content_type,
+        :content_length => @body.content_length
+      )
+
+      @header       = HTTPHeader.new( @options )
+    end
+
+    def send
+      begin
+        tcp_socket = TCPSocket.new( @options[:host], @options[:port] )
+        tcp_socket.write( @header.to_s)# + @body.to_s )
+        response = tcp_socket.read
+      rescue => exception
+        puts exception.message
+      ensure
+        tcp_socket.close
+      end
+
+      HTTPResponse.new( response ) || exception.message
     end
 
     def with_body?

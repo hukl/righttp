@@ -1,10 +1,14 @@
+require 'ruby-debug'
 module Rig
   class HTTPResponse
 
     attr_reader :header, :body
 
     def initialize response
-      @header, @body = response.split(CRLF + CRLF)
+      parts = response.split(CRLF + CRLF)
+      @header = parts.delete_at( 0 )
+      @status = @header.match(/HTTP\/\d.\d\s(\d\d\d)/)[1]
+      @body   = parts.join
 
       parse_header
 
@@ -17,8 +21,14 @@ module Rig
       end
     end
 
+    def status
+      @status ? @status.to_i : 666
+    end
+
     def parse_header
-      @header = @header.gsub(/^HTTP\/\d\.\d\s\d\d\d.+\r\n/, "")
+      status_line_regexp  = /HTTP\/\d\.\d\s\d\d\d.+\r\n/
+      status_line         = @header[status_line_regexp]
+      @header = @header.gsub(status_line_regexp, "Status: #{@status}")
       @header = @header.split(CRLF)
       @header = @header.map { |element| element.split(": ") }
       @header = @header.inject({}) do |result, element|

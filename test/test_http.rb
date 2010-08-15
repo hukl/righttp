@@ -21,7 +21,9 @@ class TestHttp < Test::Unit::TestCase
       :port=>80,
       :path=>"/",
       :http_method=>"GET",
-      :query => nil
+      :query => nil,
+      :content_type=>"text/plain",
+      :content_length=>0
     }
     assert_equal expected, request.options
   end
@@ -33,7 +35,9 @@ class TestHttp < Test::Unit::TestCase
       :port=>80,
       :path=>"/",
       :http_method=>"POST",
-      :query => nil
+      :query => nil,
+      :content_type=>"application/x-www-form-urlencoded; charset=UTF-8",
+      :content_length=>0
     }
     assert_equal expected, request.options
   end
@@ -45,7 +49,9 @@ class TestHttp < Test::Unit::TestCase
       :port=>80,
       :path=>"/",
       :http_method=>"PUT",
-      :query => nil
+      :query => nil,
+      :content_type=>"application/x-www-form-urlencoded; charset=UTF-8",
+      :content_length=>0
     }
     assert_equal expected, request.options
   end
@@ -57,7 +63,9 @@ class TestHttp < Test::Unit::TestCase
       :port=>80,
       :path=>"/",
       :http_method=>"DELETE",
-      :query => nil
+      :query => nil,
+      :content_type=>"text/plain",
+      :content_length=>0
     }
     assert_equal expected, request.options
   end
@@ -69,7 +77,9 @@ class TestHttp < Test::Unit::TestCase
       :port=>80,
       :path=>"/",
       :http_method=>"GET",
-      :query => nil
+      :query => nil,
+      :content_type=>"text/plain",
+      :content_length=>0
     }
 
     assert_equal expected, request.options
@@ -86,7 +96,9 @@ class TestHttp < Test::Unit::TestCase
       :port=>3000,
       :path=>"/",
       :http_method=>"GET",
-      :query => nil
+      :query => nil,
+      :content_type=>"text/plain",
+      :content_length=>0
     }
     assert_equal expected, request.options
   end
@@ -98,7 +110,9 @@ class TestHttp < Test::Unit::TestCase
       :port=>3000,
       :path=>"/",
       :http_method=>"GET",
-      :query => "foo=bar"
+      :query => "foo=bar",
+      :content_type=>"text/plain",
+      :content_length=>0
     }
     assert_equal expected, request.options
   end
@@ -110,7 +124,9 @@ class TestHttp < Test::Unit::TestCase
       :port=>3000,
       :path=>"/",
       :http_method=>"GET",
-      :query => "foo=bar"
+      :query => "foo=bar",
+      :content_type=>"text/plain",
+      :content_length=>0
     }
     assert_equal expected, request.options
   end
@@ -122,7 +138,9 @@ class TestHttp < Test::Unit::TestCase
       :port=>3000,
       :path=>"/",
       :http_method=>"GET",
-      :query => "foo=bar"
+      :query => "foo=bar",
+      :content_type=>"text/plain",
+      :content_length=>0
     }
     assert_equal expected, request.options
   end 
@@ -182,6 +200,12 @@ class TestHttp < Test::Unit::TestCase
                "Connection: close\r\n\r\n"
 
     assert_equal expected, get.header.to_s
+  end
+
+  test "actual get request" do
+    request = HTTP.get( "http://www.spiegel.de" )
+    response = request.send
+    assert_equal 200, response.status
   end
 
   #test "multipart body gets properly created" do

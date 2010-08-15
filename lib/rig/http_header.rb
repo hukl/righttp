@@ -1,7 +1,7 @@
 module Rig
   class HTTPHeader < Hash
 
-    def initialize options, body
+    def initialize options
       http_method = options[:http_method]
       path        = options[:path]
 
@@ -9,8 +9,8 @@ module Rig
         ""                => "#{http_method} #{path} HTTP/1.1",
         "Host"            => options[:host],
         "Origin"          => "localhost",
-        "Content-Length"  => body.content_length,
-        "Content-Type"    => body.content_type
+        "Content-Length"  => options[:content_length],
+        "Content-Type"    => options[:content_type]
       }.merge(
         (options[:custom_header] || {})
       ).merge(
