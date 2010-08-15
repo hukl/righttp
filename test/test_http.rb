@@ -133,7 +133,7 @@ class TestHttp < Test::Unit::TestCase
         "http://foo.com",
         :body => {:upload => f}
       )
-      assert request.multipart?, "Should be multipart"
+      assert request.body.multipart?, "Should be multipart"
     end
   end
 
@@ -142,7 +142,7 @@ class TestHttp < Test::Unit::TestCase
       "http://foo.com",
       :body => {:abstract => "bla", :title => "foo"}
     )
-    assert !request.multipart?, "Should not be multipart"
+    assert !request.body.multipart?, "Should not be multipart"
   end
 
   test "http object has accessible options" do
