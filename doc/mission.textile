@@ -1,0 +1,49 @@
+h1. righttp
+
+h2. What righttp wants to achieve
+
+righttp is intended to provide a simple and clean interface for HTTP requests while allowing to override almost every parameter of the request if it is neccessary.
+
+It is not just a wrapper of net/http
+
+Its philosophy is to get out of your way. You want to make a quick custom HTTP request? Then just do it like you think it should work.
+
+Below you can see the various ways to make a request:
+
+h2. Interface
+
+bc.. HTTP.get( 'http://foobar.com' )
+
+HTTP.get( 'http://foobar.com?foo=bar&baz=bang')
+
+HTTP.get( 'http://foobar.com:3000?foo=bar&baz=bang')
+
+HTTP.get( 'http://foobar.com', :params => {"foo" => "bar", :baz => "bang"} )
+
+HTTP.get(
+  'http://foobar.com',
+  :params => {"foo" => "bar", :baz => "bang"}
+)
+
+HTTP.get(
+  :host   => 'foobar.com',
+  :path   => "/posts",
+  :port   => 3000
+  :params => {"foo" => "bar", :baz => "bang"},
+)
+
+HTTP.post( 'foobar.com', :params => {"foo" => "bar"} )
+
+HTTP.post(
+  'foobar.com',
+  :params => {"foo" => "bar", :attachment => File.open("path/to/file.jpg")}
+)
+
+h2. Components
+
+* request preparation
+* sending the request
+* parsing the response
+
+
+{ uri = URI::Generic }
