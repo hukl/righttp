@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{righttp}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["hukl"]
   s.date = %q{2010-08-15}
-  s.description = %q{Why? Because it has to be done!}
+  s.description = %q{A HTTP client library written from scratch that is easy to use and offers full flexibility}
   s.email = %q{contact@smyck.org}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -39,7 +39,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{A HTTP library from scratch for ruby1.9}
+  s.summary = %q{A HTTP client library from scratch for ruby1.9}
   s.test_files = [
     "test/helper.rb",
      "test/test_http.rb"
