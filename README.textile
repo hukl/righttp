@@ -1,39 +1,57 @@
 h1. righttp
 
-righttp is a lightweigt http client library which is intended to simplify http requests.
+h2. What righttp wants to achieve
 
-It is in a very early stage and patches, suggestions and ideas how to improve it are highly appreciated.
+righttp is intended to provide a simple and clean interface for HTTP requests while allowing to override almost every parameter of the request if it is neccessary.
 
-h2. Usage
+It is not just a wrapper of net/http
 
-Currently there is only one way to perform a request:
+Its philosophy is to get out of your way.
 
-h3. Minimal version
+Below you can see the various ways to make a request:
 
-bc. request  = Rig::HTTP.new( :host => "ruby-lang.org" )
-response = request.send
+h2. Interface
 
-h3. More elaborate version
+bc.. HTTP.get( 'http://foobar.com' )
 
-bc. request  = Rig::HTTP.new(
-  :host   => "ruby-lang.org",
-  :path   => "/en/documentation/",
-  :params => {"love" => "true"}
-  :method => "GET",
-  :header => "x-CUSTOM-HEADER" => "Awesome"
+request   = HTTP.get( 'http://foobar.com?foo=bar&baz=bang')
+response  = request.send
+
+response  = HTTP.get( 'http://foobar.com:3000?foo=bar&baz=bang').send
+
+request   = HTTP.get(
+  'http://foobar.com',
+  :body => {"foo" => "bar", :baz => "bang"}
+)
+response  = request.send
+
+request   = HTTP.get(
+  'http://foobar.com',
+  :body => {"foo" => "bar", :baz => "bang"}
+)
+response  = request.send
+
+request   = HTTP.get(
+  :host   => 'foobar.com',
+  :path   => "/posts",
+  :port   => 3000
+  :body   => {"foo" => "bar", :baz => "bang"},
+)
+response  = request.send
+
+request   = HTTP.post( 'foobar.com', :body => {"foo" => "bar"} )
+response  = request.send
+
+request = HTTP.post(
+  'foobar.com',
+  :body => {"foo" => "bar", :attachment => File.open("path/to/file.jpg")}
 )
 response = request.send
 
-There will be wrapper methods for the different HTTP methods in the future.
-It is also possible to do multipart form POST/PUT requests with multiple
-files attached.
-
-h3. Multipart Post
-
-bc. request = Rig::HTTP.new(
+request = Rig::HTTP.new(
   :host   => "example.org",
   :path   => "/posts",
-  :params => { "title" => "Oh Hai", "upload" => File.open("/path/to/file.jpg") }
+  :body   => { "title" => "Oh Hai", "upload" => File.open("/path/to/file.jpg") }
 )
 response = request.send
 
@@ -41,7 +59,7 @@ The file will be closed once the multipart is created.
 
 h3. Responses
 
-When a request is send it returns a Rig::HTTPResponse which has two attributes: header and body
+When a request is send it returns a Rig::HTTPResponse which has two attributes: status, header and body
 
 h2. Note on Patches/Pull Requests
  
