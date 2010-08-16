@@ -223,6 +223,17 @@ class TestHttp < Test::Unit::TestCase
     assert_equal false, request.body.multipart?
   end
 
+  test "simple request in full manual mode" do
+    request = Rig::HTTP.new( "http://github.com:80/hukl" )
+    expected = "GET /hukl HTTP/1.1\r\n"       \
+               "Host: github.com\r\n"         \
+               "Origin: localhost\r\n"        \
+               "Content-Length: 0\r\n"        \
+               "Content-Type: text/plain\r\n" \
+               "Connection: close\r\n\r\n"
+    assert_equal expected, request.header.to_s
+  end
+
   #test "multipart body gets properly created" do
   #  post = HTTP.new(
   #    :host   => "localhost",

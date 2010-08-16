@@ -2,8 +2,8 @@ module Rig
   class HTTPHeader < Hash
 
     def initialize options
-      http_method = options[:http_method]
-      path        = options[:path]
+      http_method = options[:http_method] || "GET"
+      path        = options[:path]        || "/"
 
       header = {
         ""                => "#{http_method} #{path} HTTP/1.1",
