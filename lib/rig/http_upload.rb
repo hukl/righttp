@@ -1,7 +1,3 @@
-require 'uri'
-require 'cgi'
-require 'socket'
-
 module Rig
 
   class Upload

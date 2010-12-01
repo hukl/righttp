@@ -1,9 +1,11 @@
 require 'socket'
 require 'uri'
+require 'cgi'
 require 'rig/http_response'
 require 'rig/http_header'
 require 'rig/http_body'
 require 'rig/http_exceptions'
+require 'rig/http_upload.rb'
 
 module Rig
 
