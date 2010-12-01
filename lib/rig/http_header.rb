@@ -8,7 +8,6 @@ module Rig
       header = {
         ""                => "#{http_method} #{path} HTTP/1.1",
         "Host"            => options[:host],
-        "Origin"          => "localhost",
         "Content-Length"  => options[:content_length],
         "Content-Type"    => options[:content_type]
       }.merge(
