@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
      "lib/rig/http_exceptions.rb",
      "lib/rig/http_header.rb",
      "lib/rig/http_response.rb",
+     "lib/rig/http_upload.rb",
      "lib/righttp.rb",
      "righttp.gemspec",
      "test/fixtures/yay.gif",
