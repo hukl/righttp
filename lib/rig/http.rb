@@ -13,7 +13,7 @@ module Rig
   HTTPMethods = %w(GET POST PUT DELETE)
 
   class HTTP
-    attr_reader :options, :header, :body
+    attr_reader :options, :header, :body, :tcp_socket, :response
 
     def initialize *options
       @options      = normalize_options( options )
@@ -26,15 +26,27 @@ module Rig
       @header       = HTTPHeader.new( @options )
     end
 
+    def send_header
+      @tcp_socket ||= TCPSocket.new( @options[:host], @options[:port] )
+      @tcp_socket.write( @header.to_s )
+    end
+
+    def send_body
+      begin
+        @tcp_socket ||= TCPSocket.new( @options[:host], @options[:port] )
+        @tcp_socket.write( @body.to_s )
+        @response = tcp_socket.read
+      ensure
+        @tcp_socket.close
+      end
+    end
+
     def send
       begin
-        tcp_socket = TCPSocket.new( @options[:host], @options[:port] )
-        tcp_socket.write( @header.to_s + @body.to_s )
-        response = tcp_socket.read
+        send_header
+        send_body
       rescue => exception
         puts exception.message
-      ensure
-        tcp_socket.close
       end
 
       HTTPResponse.new( response ) || exception.message

@@ -35,7 +35,9 @@ module Rig
     def multipart?
       if defined? @multipart
         @multipart
-      elsif @options
+      elsif @options.is_a?( String )
+        @multipart = false
+      elsif @options.is_a?( Hash )
         @multipart = @options.values.any? do |element|
           element.respond_to?( :read )
         end
@@ -45,7 +47,11 @@ module Rig
     end
 
     def create_simple_body
-      push @options.map {|key, value| "#{key}=#{value}"}.join("&")
+      if @options.is_a?( String )
+        push @options
+      elsif @options.is_a?( Hash )
+        push @options.map {|key, value| "#{key}=#{value}"}.join("&")
+      end
     end
 
     def create_multipart_body
